@@ -125,10 +125,14 @@ async function postData(url = '', data = {}) {
 function submitHSForm(hsFormURL, data) {
 	postData(hsFormURL, data)
 		.then((res) => {
+			$('#form-formbuttons button.btn-approve.submitreview:not(#rpsSubmitButton)').click(); // after submitting to hubspot, submit to ArgoNet.
+
+			/*
 			if (res.inlineMessage) {
 				// Set an inline thank you message
-				document.querySelector('#thankyou').innerHTML = res.inlineMessage;
+				// document.querySelector('#thankyou').innerHTML = res.inlineMessage;
 			}
+			*/
 		})
 		.catch((err) => {
 			console.log(err);
@@ -154,3 +158,5 @@ function submitData() {
 			console.log(err);
 		});
 }
+
+$('#rpsSubmitButton').click(submitData()); // use ArgoNet data to submit Hubspot form.

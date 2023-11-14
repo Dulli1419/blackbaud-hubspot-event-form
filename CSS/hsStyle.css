@@ -1,0 +1,10 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.hideCrest {
+	display: none !important;
+}
+
+#form-formbuttons button.btn-approve.submitreview:not(#rpsSubmitButton) {
+	display: none;
+}
