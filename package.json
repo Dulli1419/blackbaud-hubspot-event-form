@@ -1,0 +1,30 @@
+{
+  "devDependencies": {
+    "eslint": "^8.18.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  },
+  "dependencies": {
+    "install-peerdeps": "^3.0.3"
+  },
+  "name": "webdevtemplate",
+  "version": "1.0.0",
+  "description": "A blank template to help quickly start new projects in VSCode.  Includes all necessary packages in the package.json (including linter config files and other dev specific files).",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "M Nardulli",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dulli1419/web-dev-template.git"
+  },
+  "keywords": [
+    "template"
+  ],
+  "bugs": {
+    "url": "https://github.com/Dulli1419/web-dev-template/issues"
+  },
+  "homepage": "https://github.com/Dulli1419/web-dev-template#readme"
+}
