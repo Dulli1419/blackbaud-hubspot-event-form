@@ -4,6 +4,17 @@
 // this collects the Blackbaud Form fields and organizes them such that they can be submitted to the Hubspot Form correctly.
 function formFieldsToHSJSON() {
 	const allFields = [];
+
+	let formattedAddress = `${$('#field2091').val()}`;
+
+	if ($('#field2092').val()) {
+		formattedAddress += `, ${$('#field2092').val()}`;
+	}
+
+	if ($('#field2093').val()) {
+		formattedAddress += `, ${$('#field2093').val()}`;
+	}
+
 	// this is the list of contact properties present on the hubspot form.
 	const fields = [
 		'email',
@@ -24,20 +35,20 @@ function formFieldsToHSJSON() {
 
 	// this is the data returned from the Blackbaud form organized such that the index of each piece of data corrisponds with the index of each of the contact properties listed in the [fields] array above.
 	const responses = [
-		'test@test.com',
-		'Test',
-		'McTesterton',
-		'01/01/2020',
-		'Childtest',
-		'McTesterton',
-		'12345678900',
-		'123 Fake St.',
-		'Fakesville',
-		'NJ',
-		'08816',
-		'Pre-Kindergarten',
-		'2024 - 2025',
-		'Lower School Open House',
+		$('#field2051').val(),
+		$('#field2044').val(),
+		$('#field2046').val(),
+		$('#field2007').val(),
+		$('#field2001').val(),
+		$('#field2003').val(),
+		$('#field2028').val(),
+		formattedAddress,
+		$('#field2094').val(),
+		$('#field2095').val(),
+		$('#field2097').val(),
+		$('#field2035').val(),
+		$('#field2033').val(),
+		'Lower School Open House', // TBD
 	];
 
 	// format everything the way the Hubspot API expects.
