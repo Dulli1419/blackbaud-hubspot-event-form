@@ -7,7 +7,7 @@
   "dependencies": {
     "install-peerdeps": "^3.0.3"
   },
-  "name": "webdevtemplate",
+  "name": "blackbaud-hubspot-event-form",
   "version": "1.0.0",
   "description": "A blank template to help quickly start new projects in VSCode.  Includes all necessary packages in the package.json (including linter config files and other dev specific files).",
   "main": "index.html",
