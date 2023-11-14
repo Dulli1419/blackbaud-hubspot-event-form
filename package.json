@@ -9,7 +9,7 @@
   },
   "name": "blackbaud-hubspot-event-form",
   "version": "1.0.0",
-  "description": "A blank template to help quickly start new projects in VSCode.  Includes all necessary packages in the package.json (including linter config files and other dev specific files).",
+  "description": "A collection of scripts to ensure that the Blackbaud education management forms submit their data to Hubspot as well.",
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,13 +18,15 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dulli1419/web-dev-template.git"
+    "url": "git+https://github.com/Dulli1419/blackbaud-hubspot-event-form.git"
   },
   "keywords": [
-    "template"
+    "hubspot",
+	"blackbaud",
+	"rutgersprep"
   ],
   "bugs": {
-    "url": "https://github.com/Dulli1419/web-dev-template/issues"
+    "url": "https://github.com/Dulli1419/blackbaud-hubspot-event-form/issues"
   },
-  "homepage": "https://github.com/Dulli1419/web-dev-template#readme"
+  "homepage": "https://github.com/Dulli1419/blackbaud-hubspot-event-form#readme"
 }
