@@ -13,6 +13,7 @@ function addCSS() {
 	hubLinkCSS.rel = 'stylesheet';
 	hubLinkCSS.type = 'text/css';
 	hubLinkCSS.href = finalAddress;
+	hubLinkCSS.id = 'rpsCSS';
 
 	document.getElementsByTagName('head')[0].appendChild(hubLinkCSS);
 }
@@ -28,6 +29,7 @@ function addLinkJS() {
 	hubLinkScript.defer = true;
 	hubLinkScript.type = 'text/javascript';
 	hubLinkScript.src = finalAddress;
+	hubLinkScript.id = 'rpsJS';
 
 	document.getElementsByTagName('head')[0].appendChild(hubLinkScript);
 }
@@ -37,19 +39,28 @@ function addSubmitButton() {
 	newSubmitButton.id = 'rpsSubmitButton';
 	newSubmitButton.className = 'btn btn-approve active btn-sm pull-left';
 
+	newSubmitButton.addEventListener('click', () => {
+		submitData();
+	}); // attach function to submit everything.
+
 	const textnode = document.createTextNode('AcceptRPS');
 	newSubmitButton.appendChild(textnode);
 
 	$('#form-formbuttons').prepend(newSubmitButton);
 }
 
-function injectAll() {
-	if ($('li.active > a[data-id="489469"]').length === 1) {
-		console.log('RPS Code Ready');
-		addCSS(); // inject the CSS file.
-		addLinkJS(); // inject the Hubspot Link code JS file.
+if ($('#rpsJS').length < 1) {
+	addLinkJS(); // inject the Hubspot Link code JS file.
+}
+
+if ($('#rpsCSS').length < 1) {
+	addCSS(); // inject the CSS file.
+}
+
+function reTrigger() {
+	// make sure this block only fires on the "Review" page.
+	if ($('#rpsSubmitButton').length < 1 && $('li.tab.active > a[data-id="489469"]').length > 0) {
+		$('#form-formbuttons button.btn-approve.submitreview:not(#rpsSubmitButton)').hide();
 		addSubmitButton(); // inject new submit button.
 	}
 }
-
-injectAll();

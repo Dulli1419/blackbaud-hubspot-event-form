@@ -141,6 +141,7 @@ function submitHSForm(hsFormURL, data) {
 
 // trigger everything above, providing the correct form ID / GUID to the API URI and then packaging everything together for form submission.
 function submitData() {
+	console.log('submitting...')
 	const baseSubmitURL = 'https://api.hsforms.com/submissions/v3/integration/submit';
 	// Add the HubSpot portalID where the form should submit
 	const portalId = '6011012';
@@ -158,5 +159,3 @@ function submitData() {
 			console.log(err);
 		});
 }
-
-$('#rpsSubmitButton').click(submitData()); // use ArgoNet data to submit Hubspot form.
