@@ -46,7 +46,7 @@ function formFieldsToHSJSON() {
 		$('#field2094').val(),
 		$('#field2095').val(),
 		$('#field2097').val(),
-		$('#field2035').val(),
+		$('#field2035 option:selected').html(),
 		$('#field2033').val(),
 		'Lower School Open House', // TBD
 	];
