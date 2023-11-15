@@ -1,0 +1,42 @@
+<!-- THIS FIRST CODE BLOCK IS TO BE ADDED TO THE FIRST PAGE OF THE FORM VIA A TEXT BOX.  THE CREST IS OPTIONAL-->
+
+<script>
+function injectStart() {
+	const uriAddress = '//www.rutgersprep.org/uploaded/Tech_Office/ArgoNet_Stylesheets/event_registration/new_form/injectRPS.js?';
+	const timeNow = Date.now();
+	const finalAddress = uriAddress + timeNow;
+
+	const hubLinkScript = document.createElement('script');
+	hubLinkScript.defer = true;
+	hubLinkScript.type = 'text/javascript';
+	hubLinkScript.src = finalAddress;
+        hubLinkScript.id = 'rpsInject';
+
+	document.getElementsByTagName('head')[0].appendChild(hubLinkScript);
+}
+
+if ($('#rpsInject').length < 1) {
+	injectStart();
+}
+
+$(document).ready(() => {
+     reTrigger();
+});
+</script>
+<!-- Start of HubSpot Embed Code -->
+<script src="//js.hs-scripts.com/6011012.js" type="text/javascript" id="hs-script-loader"></script>
+<!-- End of HubSpot Embed Code --> 
+
+<img src="https://rutgersprep.myschoolapp.com/ftpimages/1070/download/download_8962043.png" style="display: block; margin: 0 auto -5px auto; width: 130px; height: auto; padding: 0;" class="crest" />
+
+<!-- =========================== -->
+<!-- THIS SECOND BLOCK IS TO BE ADDED TO EVERY OTHER TAB WHERE YOU WANT CODE TO RUN.  I RECOMMEND ADDING IT TO EVERY TAB EXCEPT REVIEW, WHICH CAN'T BE EDITED.  AGAIN, THE CREST IS OPTIONAL-->
+
+<script>
+	$(document).ready(() => {
+		 reTrigger();
+	});
+	</script>
+	<img src="https://rutgersprep.myschoolapp.com/ftpimages/1070/download/download_8962043.png" style="display: block; margin: 0 auto -5px auto; width: 130px; height: auto; padding: 0;" class="crest" />
+	
+<!-- =========================== -->

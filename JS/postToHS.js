@@ -1,19 +1,39 @@
 // JavaScript Document
 /* eslint-env es6 */
 
-// this collects the Blackbaud Form fields and organizes them such that they can be submitted to the Hubspot Form correctly.
+// This loops through the events that the Candiate registered for and returns them in a ";" seperated list.
+function getRegOptions() {
+	const regOptions = '#attendee-options div:first-child #registration-option-list > label'; // full list of candidate registration options.
+	const regOptionsCount = $(regOptions).length; // checks the number of available options.
+	const selectedEvents = []; // this will be the final l ist of selected events.
+
+	// loop through and get the ones that have been checked off.
+	for (let i = 0; i < regOptionsCount; i++) {
+		// first check to see if the box is checked
+		if ($(`${regOptions}:nth-child(${i + 1}) input[checked="checked"]`).length > 0) {
+			const eventElement = $(`${regOptions}:nth-child(${i + 1}) > .ml-5`); // if it is checked get the element that has the name of the event.
+			selectedEvents.push($(eventElement).html().trim()); // push the name of the event to the array.
+		}
+	}
+
+	return selectedEvents.join(';'); // semi-colon sepeate everything before returning it.
+}
+
+// this collects the Blackbaud Form fields and organizes them such that they can be submitted to the Hubspot Form correctly.  Throughout this form you'll see references to [data-ordinalid="1"] - this just specifies that we want the first instance of each piece of data. ONLY THE FIRST THING WILL BE SUBMITTED TO HUBSPOT.  ONLY THE FIRST CANDIDATE, ONLY THE FIRST PARENT, ONLY THE FIRST ADDRESS, ETC...
 function formFieldsToHSJSON() {
 	const allFields = [];
 
-	let formattedAddress = `${$('#field2091').val()}`;
+	let formattedAddress = `${$('#field2091[data-ordinalid="1"]').val()}`; // first address field
 
 	if ($('#field2092').val()) {
-		formattedAddress += `, ${$('#field2092').val()}`;
+		formattedAddress += `, ${$('#field2092[data-ordinalid="1"]').val()}`; // second address field, if exists.
 	}
 
 	if ($('#field2093').val()) {
-		formattedAddress += `, ${$('#field2093').val()}`;
+		formattedAddress += `, ${$('#field2093[data-ordinalid="1"]').val()}`; // third address field, if exists.
 	}
+
+	const regOptions = getRegOptions(); // get the list of events the candidate registered for.
 
 	// this is the list of contact properties present on the hubspot form.
 	const fields = [
@@ -35,20 +55,20 @@ function formFieldsToHSJSON() {
 
 	// this is the data returned from the Blackbaud form organized such that the index of each piece of data corrisponds with the index of each of the contact properties listed in the [fields] array above.
 	const responses = [
-		$('#field2051').val(),
-		$('#field2044').val(),
-		$('#field2046').val(),
-		$('#field2007').val(),
-		$('#field2001').val(),
-		$('#field2003').val(),
-		$('#field2028').val(),
-		formattedAddress,
-		$('#field2094').val(),
-		$('#field2095').val(),
-		$('#field2097').val(),
-		$('#field2035 option:selected').html(),
-		$('#field2033').val(),
-		'Lower School Open House', // TBD
+		$('#field2051[data-ordinalid="1"]').val(), // email
+		$('#field2044[data-ordinalid="1"]').val(), // first name
+		$('#field2046[data-ordinalid="1"]').val(), // last name
+		$('#field2007[data-ordinalid="1"]').val(), // date of birth
+		$('#field2001[data-ordinalid="1"]').val(), // child's name
+		$('#field2003[data-ordinalid="1"]').val(), // child's last name
+		$('#field2028[data-ordinalid="1"]').val(), // phone
+		formattedAddress, // address
+		$('#field2094[data-ordinalid="1"]').val(), // city
+		$('#field2095[data-ordinalid="1"]').val(), // state
+		$('#field2097[data-ordinalid="1"]').val(), // zip
+		$('#field2035[data-ordinalid="1"] option:selected').html(), // grade interested in
+		$('#field2033[data-ordinalid="1"]').val(), // interested in year
+		regOptions, // registered for open house
 	];
 
 	// format everything the way the Hubspot API expects.
@@ -68,6 +88,7 @@ async function getIP() {
 	}
 
 	const data = await response.json();
+
 	return data;
 }
 
@@ -86,9 +107,9 @@ function getCookie(name) {
 // collects the contextual data required to submit the form and track the user correctly.
 function buildHSContext(ip) {
 	const hsContext = {};
-	hsContext.hutk = getCookie('hubspotutk');
-	hsContext.pageUri = window.location.href;
-	hsContext.pageName = document.title;
+	hsContext.hutk = getCookie('hubspotutk'); // get hubspot cookie
+	hsContext.pageUri = window.location.href; // get source URL.
+	hsContext.pageName = document.title; // get page name.
 	hsContext.ipAddress = ip; // returned from getIP();
 
 	return hsContext;
@@ -127,6 +148,7 @@ function submitHSForm(hsFormURL, data) {
 		.then((res) => {
 			$('#form-formbuttons button.btn-approve.submitreview:not(#rpsSubmitButton)').click(); // after submitting to hubspot, submit to ArgoNet.
 
+			// This will take the return message from HubSpot (definable in the form) and print it to a div with the ID #thankyou.
 			/*
 			if (res.inlineMessage) {
 				// Set an inline thank you message
@@ -141,19 +163,16 @@ function submitHSForm(hsFormURL, data) {
 
 // trigger everything above, providing the correct form ID / GUID to the API URI and then packaging everything together for form submission.
 function submitData() {
-	console.log('submitting...')
-	const baseSubmitURL = 'https://api.hsforms.com/submissions/v3/integration/submit';
-	// Add the HubSpot portalID where the form should submit
-	const portalId = '6011012';
-	// Add the HubSpot form GUID from your HubSpot portal
-	const formGuid = 'dc798e1c-0fd4-4494-aa44-79a58f114bf2';
+	const baseSubmitURL = 'https://api.hsforms.com/submissions/v3/integration/submit'; // The form submission api URI.
+	const portalId = '6011012'; // Add the HubSpot portalID where the form should submit
+	const formGuid = 'dc798e1c-0fd4-4494-aa44-79a58f114bf2'; // Add the HubSpot form GUID from your HubSpot portal
 	const submitURL = `${baseSubmitURL}/${portalId}/${formGuid}`;
 
 	// run getIP() before anything else so that API can finish before trying to add it to the context object for parsing by the Hubspot API.
 	getIP()
 		.then((res) => {
-			const formData = prepareHSFormSubmission(res.ip);
-			submitHSForm(submitURL, formData);
+			const formData = prepareHSFormSubmission(res.ip); // get form data
+			submitHSForm(submitURL, formData); // submit form.
 		})
 		.catch((err) => {
 			console.log(err);
