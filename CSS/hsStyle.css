@@ -1,5 +1,14 @@
 @charset "UTF-8";
 /* CSS Document */
-#form-items > div:not(:first-child) .crest {
+#form-items > div:not(:first-child) .crest, #form-formbuttons button.btn-approve.submitreview:not(#rpsSubmitButton){
 	display: none !important;
+}
+
+#hubCode {
+	position: absolute;
+	height: 0;
+	width: 0;
+	top: 0;
+	left: 0;
+	opacity: 0;
 }

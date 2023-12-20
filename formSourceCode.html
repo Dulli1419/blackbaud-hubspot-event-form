@@ -1,42 +1,130 @@
 <!-- THIS FIRST CODE BLOCK IS TO BE ADDED TO THE FIRST PAGE OF THE FORM VIA A TEXT BOX.  THE CREST IS OPTIONAL-->
 
 <script>
-function injectStart() {
-	const uriAddress = '//www.rutgersprep.org/uploaded/Tech_Office/ArgoNet_Stylesheets/event_registration/new_form/injectRPS.js?';
-	const timeNow = Date.now();
-	const finalAddress = uriAddress + timeNow;
+	// This funciton runs recursivley waiting for incriments of 300ms until a variable exists.  We use it to make sure an element exists on the page before trying to call for it.
+	function waitForVariable(variableName, callback) {
+		if (window[variableName] !== undefined) {
+			callback(); // If variable already exists, execute the callback
+		} else {
+			setTimeout(() => {
+				waitForVariable(variableName, callback); // Check again after a delay
+			}, 300); // Check again after 300 milliseconds
+		}
+	}
 
-	const hubLinkScript = document.createElement('script');
-	hubLinkScript.defer = true;
-	hubLinkScript.type = 'text/javascript';
-	hubLinkScript.src = finalAddress;
-        hubLinkScript.id = 'rpsInject';
+	// this is the primary function for bringing the rest of code in.
+	function injectStart() {
+		const uriAddress = '//www.rutgersprep.org/uploaded/Tech_Office/ArgoNet_Stylesheets/event_registration/new_form/injectRPS.js?';
+		const timeNow = Date.now(); // We append the uri address with the current time in order to make sure we aren't getting a cached version of it.
+		const finalAddress = uriAddress + timeNow;
 
-	document.getElementsByTagName('head')[0].appendChild(hubLinkScript);
-}
+		// create the script element.
+		const hubLinkScript = document.createElement('script');
+		hubLinkScript.defer = true;
+		hubLinkScript.type = 'text/javascript';
+		hubLinkScript.src = finalAddress;
+		hubLinkScript.id = 'rpsInject'; // the ID is used to check and see if it already exists, in order to make sure we don't keep recreating it over and over as people move forward and backward through the form.
 
-if ($('#rpsInject').length < 1) {
-	injectStart();
-}
+		document.getElementsByTagName('head')[0].appendChild(hubLinkScript);
 
-$(document).ready(() => {
-     reTrigger();
-});
+		// Make sure 'reTrigger()' exists before calling it.
+		waitForVariable('reTrigger', () => {
+			reTrigger();
+		});
+	}
+
+	// if we have already injected the initial code then we just need to add reTrigger and reViewTrigger to run adhoc code.  The rest of the code will stay in place as people move back and forth through the form.  Everything needs to be run at page load but we can't use window.load because it's already been defined by blackbaud at some point.  We just add to their decloration here.
+	if ($('#rpsInject').length < 1) {
+		if (window.addEventListener) {
+			window.addEventListener('load', injectStart());
+		} else {
+			window.attachEvent('onload', injectStart());
+		}
+	} else {
+		if (window.addEventListener) {
+			window.addEventListener(
+				'load',
+				waitForVariable('reTrigger', () => {
+					reTrigger();
+				}),
+				waitForVariable('reViewTrigger', () => {
+					reViewTrigger();
+				})
+			);
+		} else {
+			window.attachEvent(
+				'onload',
+				waitForVariable('reTrigger', () => {
+					reTrigger();
+				}),
+				waitForVariable('reViewTrigger', () => {
+					reViewTrigger();
+				})
+			);
+		}
+	}
 </script>
 <!-- Start of HubSpot Embed Code -->
 <script src="//js.hs-scripts.com/6011012.js" type="text/javascript" id="hs-script-loader"></script>
-<!-- End of HubSpot Embed Code --> 
+<!-- End of HubSpot Embed Code -->
 
-<img src="https://rutgersprep.myschoolapp.com/ftpimages/1070/download/download_8962043.png" style="display: block; margin: 0 auto -5px auto; width: 130px; height: auto; padding: 0;" class="crest" />
+<!-- this is the embed code for the crest -->
+<img
+	src="https://rutgersprep.myschoolapp.com/ftpimages/1070/download/download_8962043.png"
+	style="display: block; margin: 0 auto -5px auto; width: 130px; height: auto; padding: 0"
+	class="crest"
+/>
 
 <!-- =========================== -->
 <!-- THIS SECOND BLOCK IS TO BE ADDED TO EVERY OTHER TAB WHERE YOU WANT CODE TO RUN.  I RECOMMEND ADDING IT TO EVERY TAB EXCEPT REVIEW, WHICH CAN'T BE EDITED.  AGAIN, THE CREST IS OPTIONAL-->
 
+<!-- this is the stripped down version of the code that adds reTrigger() -->
 <script>
-	$(document).ready(() => {
-		 reTrigger();
-	});
-	</script>
-	<img src="https://rutgersprep.myschoolapp.com/ftpimages/1070/download/download_8962043.png" style="display: block; margin: 0 auto -5px auto; width: 130px; height: auto; padding: 0;" class="crest" />
-	
+	if (window.addEventListener) {
+		window.addEventListener('load', reTrigger());
+	} else {
+		window.attachEvent('onload', reTrigger());
+	}
+</script>
+
+<!-- this is the embed code for the crest -->
+<img
+	src="https://rutgersprep.myschoolapp.com/ftpimages/1070/download/download_8962043.png"
+	style="display: block; margin: 0 auto -5px auto; width: 130px; height: auto; padding: 0"
+	class="crest"
+/>
+
 <!-- =========================== -->
+<!-- THIS THIRD BLOCK IS TO BE ADDED TO THE BLOCK HOLDING THE HUBSPOT FORM CODE.  I RECOMMEND ADDING THIS TO THE FIRST PAGE BUT IT CAN BE ADDED TO ANY PAGE THAT WILL RENDER ON THE REVIEW TAB.  IT SHOULD BE IN ITS OWN TEXT BOX ON THE FORM.-->
+
+<!-- the form code listed here is the Test form.  People will be able to change it to the approrpiate code in the WYSIWIG editor for the form.-->
+<div id="hubCode">Hubspot Form Code: dc798e1c-0fd4-4494-aa44-79a58f114bf2</div>
+<script>
+	// this is necessary for us to hide the code at the time that the block loads.  If we wait for the CSS decloration people will see the code load for a second.  More aggrssive hiding tacticts will load up a moment later when the CSS is loaded.
+	if ($('#header').length > 0) {
+		$('#hubCode').css('opacity', 0);
+	}
+
+	// this pulls the form ID into a variable so it can be passed to the API call to connect to the correct hubspot form.
+	if (window['hubCodeReady'] === undefined) {
+		window['hubCodeReady'] = $('#hubCode').text().split(':')[1].trim();
+	}
+</script>
+
+<!-- =========================== -->
+<!-- THIS FOURTH BLOCK IS TO BE ADDED TO THE BLOCK HOLDING THE FORM CONFIRMATION TEXT ON THE FINAL TAB.  IT'S USED TO REDIRECT THE FORM TO THE GETTING STARTED PAGE-->
+
+<div>
+	Thank you. Your form has been submitted.
+	<br />
+	<br />
+	Have a great day!
+</div>
+<script>
+	const redirectURI = 'https://www.rutgersprep.org/admission/getting-started';
+
+	// Redirect after a 3-second delay
+	setTimeout(function () {
+		window.location.href = redirectURI;
+	}, 3000);
+</script>

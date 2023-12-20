@@ -4,19 +4,45 @@
 // This loops through the events that the Candiate registered for and returns them in a ";" seperated list.
 function getRegOptions() {
 	const regOptions = '#attendee-options div:first-child #registration-option-list > label'; // full list of candidate registration options.
-	const regOptionsCount = $(regOptions).length; // checks the number of available options.
-	const selectedEvents = []; // this will be the final l ist of selected events.
+	let selectedEvents; // this will be the final l ist of selected events.
+	const gradeList = [
+		'Pre-Kindergarten',
+		'Junior Kindergarten',
+		'Kindergarten',
+		'1st Grade',
+		'2nd Grade',
+		'3rd Grade',
+		'4th Grade',
+		'5th Grade',
+		'6th Grade',
+		'7th Grade',
+		'8th Grade',
+		'9th Grade',
+		'10th Grade',
+		'11th Grade',
+		'12th Grade',
+	];
+	const gradeInterested = gradeList.indexOf($('#field2035[data-ordinalid="1"] option:selected').html());
 
-	// loop through and get the ones that have been checked off.
-	for (let i = 0; i < regOptionsCount; i++) {
-		// first check to see if the box is checked
-		if ($(`${regOptions}:nth-child(${i + 1}) input[checked="checked"]`).length > 0) {
-			const eventElement = $(`${regOptions}:nth-child(${i + 1}) > .ml-5`); // if it is checked get the element that has the name of the event.
-			selectedEvents.push($(eventElement).html().trim()); // push the name of the event to the array.
-		}
+	// first check to see if the box is checked
+	if ($(`${regOptions}:nth-child(${1}) input[checked="checked"]`).length > 0) {
+		const eventElement = $(`${regOptions}:nth-child(${1}) > .ml-5`); // if it is checked get the element that has the name of the event.
+		selectedEvents = $(eventElement).html().trim(); // set the variable to the name of the event;
 	}
 
-	return selectedEvents.join(';'); // semi-colon sepeate everything before returning it.
+	if (selectedEvents === 'Athletic Info Session') {
+		return selectedEvents;
+	}
+
+	if (gradeInterested > 10) {
+		return 'Upper School Open House';
+	}
+
+	if (gradeInterested > 7) {
+		return 'Middle School Open House';
+	}
+
+	return 'Lower School Open House';
 }
 
 // this collects the Blackbaud Form fields and organizes them such that they can be submitted to the Hubspot Form correctly.  Throughout this form you'll see references to [data-ordinalid="1"] - this just specifies that we want the first instance of each piece of data. ONLY THE FIRST THING WILL BE SUBMITTED TO HUBSPOT.  ONLY THE FIRST CANDIDATE, ONLY THE FIRST PARENT, ONLY THE FIRST ADDRESS, ETC...
@@ -61,7 +87,7 @@ function formFieldsToHSJSON() {
 		$('#field2007[data-ordinalid="1"]').val(), // date of birth
 		$('#field2001[data-ordinalid="1"]').val(), // child's name
 		$('#field2003[data-ordinalid="1"]').val(), // child's last name
-		$('#field2028[data-ordinalid="1"]').val(), // phone
+		$('#field2050[data-ordinalid="1"]').val(), // phone
 		formattedAddress, // address
 		$('#field2094[data-ordinalid="1"]').val(), // city
 		$('#field2095[data-ordinalid="1"]').val(), // state
@@ -162,11 +188,10 @@ function submitHSForm(hsFormURL, data) {
 }
 
 // trigger everything above, providing the correct form ID / GUID to the API URI and then packaging everything together for form submission.
-function submitData() {
+function submitData(hubID) {
 	const baseSubmitURL = 'https://api.hsforms.com/submissions/v3/integration/submit'; // The form submission api URI.
 	const portalId = '6011012'; // Add the HubSpot portalID where the form should submit
-	const formGuid = 'dc798e1c-0fd4-4494-aa44-79a58f114bf2'; // Add the HubSpot form GUID from your HubSpot portal
-	const submitURL = `${baseSubmitURL}/${portalId}/${formGuid}`;
+	const submitURL = `${baseSubmitURL}/${portalId}/${hubID}`;
 
 	// run getIP() before anything else so that API can finish before trying to add it to the context object for parsing by the Hubspot API.
 	getIP()
